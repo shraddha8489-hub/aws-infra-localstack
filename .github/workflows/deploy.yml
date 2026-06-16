@@ -75,10 +75,12 @@ jobs:
         working-directory: terraform
 
       - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          image-tag: latest
-          install-awslocal: true
+        run: |
+          docker run -d \
+            --name localstack \
+            -p 4566:4566 \
+            -e SERVICES=s3,sqs,dynamodb \
+            localstack/localstack:3.8.1
 
       - name: Wait for LocalStack to be ready
         run: |
@@ -133,10 +135,12 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
 
       - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          image-tag: latest
-          install-awslocal: true
+        run: |
+          docker run -d \
+            --name localstack \
+            -p 4566:4566 \
+            -e SERVICES=s3,sqs,dynamodb \
+            localstack/localstack:3.8.1
 
       - name: Wait for LocalStack to be ready
         run: |
@@ -159,6 +163,7 @@ jobs:
 
       - name: Verify resources were created
         run: |
+          pip install awscli-local
           echo "--- S3 Buckets ---"
           awslocal s3 ls
 
