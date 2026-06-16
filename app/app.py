@@ -103,3 +103,27 @@ def get_item(item_id):
  
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+@app.route("/health/detailed", methods=["GET"])
+def detailed_health():
+    checks = {}
+
+    try:
+        s3 = get_s3()
+        s3.list_buckets()
+        checks["s3"] = "ok"
+    except Exception as e:
+        checks["s3"] = str(e)
+
+    try:
+        dynamodb = get_dynamodb()
+        list(dynamodb.tables.all())
+        checks["dynamodb"] = "ok"
+    except Exception as e:
+        checks["dynamodb"] = str(e)
+
+    all_ok = all(v == "ok" for v in checks.values())
+    return jsonify({
+        "status": "healthy" if all_ok else "degraded",
+        "services": checks
+    }), 200 if all_ok else 503
