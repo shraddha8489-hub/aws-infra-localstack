@@ -79,6 +79,8 @@ jobs:
         with:
           image-tag: latest
           install-awslocal: true
+        env:
+          LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: "1"
 
       - name: Wait for LocalStack to be ready
         run: |
@@ -137,6 +139,8 @@ jobs:
         with:
           image-tag: latest
           install-awslocal: true
+        env:
+          LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: "1"
 
       - name: Wait for LocalStack to be ready
         run: |
