@@ -1,0 +1,25 @@
+services:
+  localstack:
+    image: localstack/localstack:3.8.1
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,sqs,dynamodb
+      - DEFAULT_REGION=us-east-1
+      - EAGER_SERVICE_LOADING=1
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  app:
+    build: ./app
+    container_name: flask-app
+    ports:
+      - "5001:5000"
+    environment:
+      - LOCALSTACK_URL=http://localstack:4566
+      - S3_BUCKET=app-bucket
+      - SQS_QUEUE_URL=http://localstack:4566/000000000000/app-queue
+      - DYNAMODB_TABLE=app-table
+    depends_on:
+      - localstack
