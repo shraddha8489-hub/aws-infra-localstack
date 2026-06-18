@@ -80,7 +80,7 @@ jobs:
             --name localstack \
             -p 4566:4566 \
             -e SERVICES=s3,sqs,dynamodb \
-            localstack/localstack:3.8.1
+            localstack/localstack:2.3.2
 
       - name: Wait for LocalStack to be ready
         run: |
